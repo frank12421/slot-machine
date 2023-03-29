@@ -2,6 +2,7 @@ import { Wheel } from "./components/Wheel/Wheel.js";
 import { SpinButton } from "./components/SpinButton/SpinButton.js";
 import { Machine } from "./components/Machine/Machine.js";
 import { Result } from "./components/Result/Result.js";
+import { getMaxCount } from "./utils/symbols.js";
 
 console.clear();
 
@@ -22,12 +23,40 @@ root.append(machine, spinButton, result);
 //                                      ↙️
 spinButton.addEventListener("click", async () => {
   spinButton.disabled = true;
+  try {
+    result.setSpinning();
+    const value = await Promise.all([
+      wheel1.spin(),
+      wheel2.spin(),
+      wheel3.spin(),
+    ]);
+    console.log(value);
+    const countFruits = getMaxCount(value);
+
+    if (countFruits === 3) {
+      result.setResult(100);
+    } else if (countFruits === 2) {
+      result.setResult(10);
+    } else {
+      result.setResult(0);
+    }
+  } catch (error) {
+    result.setMachineChoked();
+    console.error(error);
+  } finally {
+    spinButton.disabled = false;
+  }
+
+  //  const myCount = "200";
+  //  result.setResult(myCount);
+
   /**
    * Hint 1:
    * The wheel elements have a spin method that returns a promise.
    * That promise resolves with the symbol that the wheel stopped on.
    * You can call it like this: `wheel1.spin()`, `wheel2.spin()` and
    * `wheel3.spin()`.
+   *
    *
    * Hint 2:
    * You can use Promise.all to wait for all promises to resolve.
@@ -62,8 +91,6 @@ spinButton.addEventListener("click", async () => {
    * and make sure it is always executed after the wheels have stopped,
    * even if an error was thrown.
    */
-
-  spinButton.disabled = false;
 });
 
 /**
