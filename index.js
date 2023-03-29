@@ -47,9 +47,6 @@ spinButton.addEventListener("click", async () => {
     spinButton.disabled = false;
   }
 
-  //  const myCount = "200";
-  //  result.setResult(myCount);
-
   /**
    * Hint 1:
    * The wheel elements have a spin method that returns a promise.
